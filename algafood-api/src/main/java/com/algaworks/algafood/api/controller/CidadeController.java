@@ -1,6 +1,7 @@
 package com.algaworks.algafood.api.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,15 +33,15 @@ public class CidadeController {
 	
 	@GetMapping
 	public List<Cidade> listar(){
-		return cidadeRepository.listar();
+		return cidadeRepository.findAll();
 	}
 	
 	@GetMapping("/{cidadeId}")
 	public ResponseEntity<Cidade> buscar(@PathVariable Long cidadeId) {		
-		Cidade cidade = cidadeRepository.buscar(cidadeId); 
+		Optional<Cidade> cidadeOptional = cidadeRepository.findById(cidadeId);
 		
-		if(cidade != null) {
-			return ResponseEntity.ok(cidade);
+		if(cidadeOptional.isPresent()) {
+			return ResponseEntity.ok(cidadeOptional.get());
 		}
 		return ResponseEntity.notFound().build(); 
 	}
@@ -61,12 +62,12 @@ public class CidadeController {
 	@PutMapping("{cidadeId}")
 	public ResponseEntity<?> atualizar(@PathVariable Long cidadeId, @RequestBody Cidade cidade){
 		try {
-			Cidade cidadeRecuperada = cidadeRepository.buscar(cidadeId);
+			Optional<Cidade> cidadeRecuperada = cidadeRepository.findById(cidadeId);
 			
-			if(cidadeRecuperada != null) {
+			if(cidadeRecuperada.isPresent()) {
 				BeanUtils.copyProperties(cidade, cidadeRecuperada,"id");
-				cidadeRecuperada = cadastroCidade.gravar(cidadeRecuperada);
-				return ResponseEntity.ok(cidadeRecuperada);
+				Cidade cidadeSalva = cadastroCidade.gravar(cidadeRecuperada.get());
+				return ResponseEntity.ok(cidadeSalva);
 			}
 			return ResponseEntity.notFound().build();
 		} catch (EntidadeNaoEncontradaException e) {

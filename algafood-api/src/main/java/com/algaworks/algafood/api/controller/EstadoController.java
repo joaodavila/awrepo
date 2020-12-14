@@ -1,6 +1,7 @@
 package com.algaworks.algafood.api.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,15 +35,15 @@ public class EstadoController {
 
 	@GetMapping
 	public List<Estado> listar(){
-		return estadoRepository.listar();
+		return estadoRepository.findAll();
 	}
 	
 	@GetMapping("/{estadoId}")
 	public ResponseEntity<Estado> buscar(@PathVariable Long estadoId){
-		Estado estadoRecuperado = estadoRepository.buscar(estadoId);
+		Optional<Estado> estadoRecuperadoOptional = estadoRepository.findById(estadoId);
 		
-		if(estadoRecuperado != null) {
-			return ResponseEntity.ok(estadoRecuperado);
+		if(estadoRecuperadoOptional.isPresent()) {
+			return ResponseEntity.ok(estadoRecuperadoOptional.get());
 		}
 		return ResponseEntity.notFound().build();
 	}
@@ -58,12 +59,12 @@ public class EstadoController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<Estado> atualizar(@PathVariable Long estadoId, @RequestBody Estado estado) {
 		
-		Estado estadoRecuperado = estadoRepository.buscar(estadoId);
+		Optional<Estado> estadoRecuperadoOptional = estadoRepository.findById(estadoId);
 		
-		if(estadoRecuperado != null) {
-			BeanUtils.copyProperties(estado, estadoRecuperado, "id");
-			estadoRecuperado = cadastroEstado.gravar(estadoRecuperado); 
-			return ResponseEntity.ok(estadoRecuperado);
+		if(estadoRecuperadoOptional.isPresent()) {
+			BeanUtils.copyProperties(estado, estadoRecuperadoOptional, "id");
+			Estado estadoSalvo = cadastroEstado.gravar(estadoRecuperadoOptional.get()); 
+			return ResponseEntity.ok(estadoSalvo);
 		}
 		return ResponseEntity.notFound().build();
 	}
