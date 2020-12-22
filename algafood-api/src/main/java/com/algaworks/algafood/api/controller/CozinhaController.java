@@ -37,7 +37,7 @@ public class CozinhaController {
 	public List<Cozinha> listar() {
 		return cozinhaRepository.findAll();
 	}
-
+	
 	@GetMapping("/{cozinhaId}")
 	public ResponseEntity<Cozinha> buscar(@PathVariable Long cozinhaId) {
 		Optional<Cozinha> cozinha = cozinhaRepository.findById(cozinhaId);
