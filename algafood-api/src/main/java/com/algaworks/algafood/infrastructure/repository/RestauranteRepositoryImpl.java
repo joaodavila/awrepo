@@ -49,9 +49,8 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
 		TypedQuery<Restaurante> query =  manager.
 				createQuery(jpql.toString(), Restaurante.class);
 		
-		for(Map.Entry<String, Object> map : parametros.entrySet()) {
-			query.setParameter(map.getKey(), map.getValue());
-		}
+		parametros.forEach((chave,valor) -> query.setParameter(chave, valor));
+
 		return query.getResultList();
 	}
 }
