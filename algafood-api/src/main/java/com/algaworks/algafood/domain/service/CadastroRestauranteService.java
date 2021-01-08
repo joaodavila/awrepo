@@ -23,7 +23,6 @@ public class CadastroRestauranteService {
 	CozinhaRepository cozinhaRepository;
 
 	public Restaurante gravar(Restaurante restaurante) {
-		
 		verificaColunasNulas(restaurante);
 		
 		Long cozinhaId = restaurante.getCozinha().getId();		
@@ -33,7 +32,6 @@ public class CadastroRestauranteService {
 						String.format("Não existe cadastro de cozinha com o sódigo %d", cozinhaId)));
 
 		restaurante.setCozinha(cozinha);
-		
 		return restauranteRepository.save(restaurante);
 	}
 
